@@ -9,11 +9,8 @@ import android.widget.TextView;
 import net.vrallev.android.cat.Cat;
 import net.vrallev.android.cat.CatLog;
 import net.vrallev.android.cat.instance.CatSimple;
-import net.vrallev.android.cat.print.CatPrinter;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author rwondratschek
@@ -22,15 +19,9 @@ public class FileActivity extends Activity {
 
     private static final FilePrinter FILE_PRINTER = new FilePrinter(App.instance());
 
-    private static final CatLog CAT = new CatSimple(FileActivity.class) {
-
-        private final List<? extends CatPrinter> mPrinters = Collections.singletonList(FILE_PRINTER);
-
-        @Override
-        protected List<? extends CatPrinter> getLocalPrinters() {
-            return mPrinters;
-        }
-    };
+    private static final CatLog CAT = new CatSimple(FileActivity.class) {{
+            addPrinter(FILE_PRINTER);
+    }};
 
     private TextView mTextView;
 

@@ -3,7 +3,6 @@ package net.vrallev.android.cat;
 import android.support.annotation.NonNull;
 
 import net.vrallev.android.cat.instance.CatLazy;
-import net.vrallev.android.cat.print.AndroidLog;
 import net.vrallev.android.cat.print.CatPrinter;
 
 import java.util.ArrayList;
@@ -23,25 +22,13 @@ public final class CatGlobal {
         // no op
     }
 
-    private static final List<CatPrinter> PRINTERS = new ArrayList<CatPrinter>() {{
-        add(new AndroidLog());
-    }};
-
     private static final Set<String> DISABLED_TAGS = new HashSet<>();
     private static final List<String> DISABLED_PACKAGES = new ArrayList<>();
 
     private static CatLog defaultCatLog = new CatLazy();
     private static final Map<String, CatLog> PACKAGE_CAT_LOGS = new HashMap<>();
 
-    public static synchronized void addPrinter(@NonNull CatPrinter printer) {
-        PRINTERS.add(printer);
-    }
-
-    public static synchronized void clearPrinters() {
-        PRINTERS.clear();
-    }
-
-    /*package*/ static synchronized void print(int priority, String tag, String message, Throwable t, List<? extends CatPrinter> localPrinters) {
+    /*package*/ static synchronized void print(int priority, String tag, String message, Throwable t, List<? extends CatPrinter> printers) {
         if (!DISABLED_TAGS.isEmpty() && DISABLED_TAGS.contains(tag)) {
             return;
         }
@@ -50,13 +37,9 @@ public final class CatGlobal {
             return;
         }
 
-        for (int i = 0; i < PRINTERS.size(); i++) {
-            PRINTERS.get(i).println(priority, tag, message, t);
-        }
-
-        if (localPrinters != null && !localPrinters.isEmpty()) {
-            for (int i = 0; i < localPrinters.size(); i++) {
-                localPrinters.get(i).println(priority, tag, message, t);
+        if (printers != null && !printers.isEmpty()) {
+            for (int i = 0; i < printers.size(); i++) {
+                printers.get(i).println(priority, tag, message, t);
             }
         }
     }

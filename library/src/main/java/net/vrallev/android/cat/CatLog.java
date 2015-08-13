@@ -3,8 +3,10 @@ package net.vrallev.android.cat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import net.vrallev.android.cat.print.AndroidLog;
 import net.vrallev.android.cat.print.CatPrinter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,10 +16,21 @@ import java.util.Locale;
 @SuppressWarnings("UnusedDeclaration")
 public abstract class CatLog {
 
+    private final List<CatPrinter> mPrinters;
+
+    protected CatLog() {
+        mPrinters = new ArrayList<>();
+        mPrinters.add(new AndroidLog());
+    }
+
     protected abstract String getTag();
 
-    protected List<? extends CatPrinter> getLocalPrinters() {
-        return null;
+    public synchronized void addPrinter(CatPrinter printer) {
+        mPrinters.add(printer);
+    }
+
+    protected synchronized List<? extends CatPrinter> getPrinters() {
+        return mPrinters;
     }
 
     public void d(String message) {
@@ -99,7 +112,7 @@ public abstract class CatLog {
             message = "empty message";
         }
 
-        CatGlobal.print(priority, getTag(), message, t, getLocalPrinters());
+        CatGlobal.print(priority, getTag(), message, t, getPrinters());
     }
 
     private static String format(String message, Object[] args) {

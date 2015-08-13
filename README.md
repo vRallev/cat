@@ -10,7 +10,7 @@ Download [the latest version][1] or grab via Gradle:
 
 ```groovy
 dependencies {
-    compile 'net.vrallev.android:cat:1.0.1'
+    compile 'net.vrallev.android:cat:1.0.2'
 }
 ```
 
@@ -29,7 +29,7 @@ Each logging method has the option to pass arguments for a formatted log message
 
  ```java
  public void logSomething() {
- 	Cat.d("%s < %d == %b", "1", 4, true);
+ 	Cat.d("%s < %d == %b", "1", 4, true); // "1 < 4 == true"
  }
  ```
 
@@ -60,7 +60,7 @@ CatGlobal.setPackageEnabled("net.vrallev", false); // also disables "net.vrallev
 CatGlobal.setTagEnabled("MyTag", false);
 ```
 
-It's even possible to add more log targets. Implement the `CatPrinter` interface and add the printer to a specific `CatLog` instance or globally with `CatGlobal`. `AndroidLog` is the default printer and writers all log entries into LogCat.
+It's even possible to add more log targets. Implement the `CatPrinter` interface and add the printer to a specific `CatLog` instance. `AndroidLog` is the default printer and writers all log entries into LogCat.
 
 ```java
 public class FilePrinter implements CatPrinter {
@@ -93,15 +93,9 @@ public class FileActivity extends Activity {
 
     private static final FilePrinter FILE_PRINTER = new FilePrinter(App.instance());
 
-    private static final CatLog CAT = new CatSimple(FileActivity.class) {
-
-        private final List<? extends CatPrinter> mPrinters = Collections.singletonList(FILE_PRINTER);
-
-        @Override
-        protected List<? extends CatPrinter> getLocalPrinters() {
-            return mPrinters;
-        }
-    };
+    private static final CatLog CAT = new CatSimple(FileActivity.class) {{
+            addPrinter(FILE_PRINTER);
+    }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
