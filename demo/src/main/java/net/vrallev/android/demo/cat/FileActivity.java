@@ -12,7 +12,7 @@ import net.vrallev.android.cat.instance.CatSimple;
 import net.vrallev.android.cat.print.CatPrinter;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,12 +24,10 @@ public class FileActivity extends Activity {
 
     private static final CatLog CAT = new CatSimple(FileActivity.class) {
 
-        private final List<CatPrinter> mPrinters = new ArrayList<CatPrinter>() {{
-            add(FILE_PRINTER);
-        }};
+        private final List<? extends CatPrinter> mPrinters = Collections.singletonList(FILE_PRINTER);
 
         @Override
-        protected List<CatPrinter> getLocalPrinters() {
+        protected List<? extends CatPrinter> getLocalPrinters() {
             return mPrinters;
         }
     };

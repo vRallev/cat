@@ -7,7 +7,9 @@ import android.view.View;
 
 import net.vrallev.android.cat.Cat;
 import net.vrallev.android.cat.CatLog;
+import net.vrallev.android.cat.instance.CatLazy;
 import net.vrallev.android.cat.instance.CatSimple;
+import net.vrallev.android.demo.cat.def.TestDefaultPackage;
 import net.vrallev.android.demo.cat.disabled.TestDisabled;
 
 /**
@@ -41,6 +43,18 @@ public class MainActivity extends Activity {
                 testDisabledPackage();
                 break;
 
+            case R.id.button_default_package:
+                testDefaultPackage();
+                break;
+
+            case R.id.button_inner_class:
+                testInnerClass();
+                break;
+
+            case R.id.button_custom_cat:
+                testCatCustom();
+                break;
+
             case R.id.button_open_file_activity:
                 startActivity(new Intent(this, FileActivity.class));
                 break;
@@ -64,5 +78,31 @@ public class MainActivity extends Activity {
 
     private void testDisabledPackage() {
         TestDisabled.log();
+    }
+
+    private void testDefaultPackage() {
+        TestDefaultPackage.log();
+    }
+
+    private void testInnerClass() {
+        InnerClassTest.log();
+    }
+
+    private void testCatCustom() {
+        new CatCustom().d("Hello world");
+    }
+
+    private static class InnerClassTest {
+        public static void log() {
+            new CatLazy().d("Inner class");
+        }
+    }
+
+    private static class CatCustom extends CatLazy {
+        @Override
+        public void d(String message) {
+            String tag = getTag();
+            super.d(tag + message);
+        }
     }
 }

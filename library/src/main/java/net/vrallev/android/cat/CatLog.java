@@ -16,7 +16,7 @@ public abstract class CatLog {
 
     protected abstract String getTag();
 
-    protected List<CatPrinter> getLocalPrinters() {
+    protected List<? extends CatPrinter> getLocalPrinters() {
         return null;
     }
 
@@ -99,11 +99,7 @@ public abstract class CatLog {
             message = "empty message";
         }
 
-        if (t != null) {
-            message += '\n' + Log.getStackTraceString(t);
-        }
-
-        CatGlobal.print(priority, getTag(), message, getLocalPrinters());
+        CatGlobal.print(priority, getTag(), message, t, getLocalPrinters());
     }
 
     private static String format(String message, Object[] args) {

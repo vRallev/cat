@@ -1,6 +1,8 @@
 package net.vrallev.android.demo.cat;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import net.vrallev.android.cat.Cat;
 import net.vrallev.android.cat.print.CatPrinter;
@@ -26,7 +28,7 @@ public class FilePrinter implements CatPrinter {
     }
 
     @Override
-    public void println(int priority, String tag, String msg) {
+    public void println(int priority, @NonNull String tag, @NonNull String msg, @Nullable Throwable t) {
         msg = mDateFormat.format(new Date()) + "\t\t" + tag + "\t\t" + msg + '\n';
 
         try {

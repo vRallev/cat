@@ -10,7 +10,7 @@ Download [the latest version][1] or grab via Gradle:
 
 ```groovy
 dependencies {
-    compile 'net.vrallev.android:cat:1.0.0'
+    compile 'net.vrallev.android:cat:1.0.1'
 }
 ```
 
@@ -24,6 +24,14 @@ public void logSomething() {
 	Cat.d("Hello world");
 }
 ```
+
+Each logging method has the option to pass arguments for a formatted log message using `String.format()`.
+
+ ```java
+ public void logSomething() {
+ 	Cat.d("%s < %d == %b", "1", 4, true);
+ }
+ ```
 
 Advanced
 --------
@@ -57,17 +65,17 @@ It's even possible to add more log targets. Implement the `CatPrinter` interface
 ```java
 public class FilePrinter implements CatPrinter {
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault());
-
     private final Context mContext;
+    private final DateFormat mDateFormat;
 
     public FilePrinter(Context context) {
         mContext = context;
+        mDateFormat = new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault());
     }
 
     @Override
-    public void println(int priority, String tag, String msg) {
-        msg = DATE_FORMAT.format(new Date()) + "\t\t" + tag + "\t\t" + msg + '\n';
+    public void println(int priority, @NonNull String tag, @NonNull String msg, @Nullable Throwable t) {
+        msg = mDateFormat.format(new Date()) + "\t\t" + tag + "\t\t" + msg + '\n';
 
         try {
             FileUtils.writeFile(getLogFile(), msg, true);
@@ -87,12 +95,10 @@ public class FileActivity extends Activity {
 
     private static final CatLog CAT = new CatSimple(FileActivity.class) {
 
-        private final List<CatPrinter> mPrinters = new ArrayList<CatPrinter>() {{
-            add(FILE_PRINTER);
-        }};
+        private final List<? extends CatPrinter> mPrinters = Collections.singletonList(FILE_PRINTER);
 
         @Override
-        protected List<CatPrinter> getLocalPrinters() {
+        protected List<? extends CatPrinter> getLocalPrinters() {
             return mPrinters;
         }
     };

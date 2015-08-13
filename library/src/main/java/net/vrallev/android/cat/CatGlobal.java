@@ -7,8 +7,10 @@ import net.vrallev.android.cat.print.AndroidLog;
 import net.vrallev.android.cat.print.CatPrinter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,6 +31,7 @@ public final class CatGlobal {
     private static final List<String> DISABLED_PACKAGES = new ArrayList<>();
 
     private static CatLog defaultCatLog = new CatLazy();
+    private static final Map<String, CatLog> PACKAGE_CAT_LOGS = new HashMap<>();
 
     public static synchronized void addPrinter(@NonNull CatPrinter printer) {
         PRINTERS.add(printer);
@@ -38,7 +41,7 @@ public final class CatGlobal {
         PRINTERS.clear();
     }
 
-    /*package*/ static synchronized void print(int priority, String tag, String msg, List<CatPrinter> localPrinters) {
+    /*package*/ static synchronized void print(int priority, String tag, String message, Throwable t, List<? extends CatPrinter> localPrinters) {
         if (!DISABLED_TAGS.isEmpty() && DISABLED_TAGS.contains(tag)) {
             return;
         }
@@ -48,12 +51,12 @@ public final class CatGlobal {
         }
 
         for (int i = 0; i < PRINTERS.size(); i++) {
-            PRINTERS.get(i).println(priority, tag, msg);
+            PRINTERS.get(i).println(priority, tag, message, t);
         }
 
         if (localPrinters != null && !localPrinters.isEmpty()) {
             for (int i = 0; i < localPrinters.size(); i++) {
-                localPrinters.get(i).println(priority, tag, msg);
+                localPrinters.get(i).println(priority, tag, message, t);
             }
         }
     }
@@ -75,13 +78,7 @@ public final class CatGlobal {
     }
 
     private static boolean isCallingClassDisabled() {
-        String className = CatUtil.getCallingClassName();
-        String[] split = className.split("\\.");
-        if (split.length <= 1) {
-            return false;
-        }
-
-        String packageName = className.substring(0, className.length() - 1 - split[split.length - 1].length());
+        String packageName = CatUtil.getCallingPackage();
 
         for (int i = 0; i < DISABLED_PACKAGES.size(); i++) {
             String disabledPackage = DISABLED_PACKAGES.get(i);
@@ -98,6 +95,23 @@ public final class CatGlobal {
     }
 
     /*package*/ static synchronized CatLog getDefaultCatLog() {
+        if (!PACKAGE_CAT_LOGS.isEmpty()) {
+            String callingPackage = CatUtil.getCallingPackage();
+            for (String catLogPackage : PACKAGE_CAT_LOGS.keySet()) {
+                if (callingPackage.startsWith(callingPackage)) {
+                    return PACKAGE_CAT_LOGS.get(catLogPackage);
+                }
+            }
+        }
+
         return defaultCatLog;
+    }
+
+    public static synchronized void setDefaultCatLogPackage(@NonNull String catLogPackage, CatLog catLog) {
+        PACKAGE_CAT_LOGS.put(catLogPackage, catLog);
+    }
+
+    public static synchronized void removeDefaultCatLogPackage(@NonNull String catLogPackage) {
+        PACKAGE_CAT_LOGS.remove(catLogPackage);
     }
 }
