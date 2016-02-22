@@ -27,6 +27,7 @@ public final class CatGlobal {
 
     private static CatLog defaultCatLog = new CatLazy();
     private static final Map<String, CatLog> PACKAGE_CAT_LOGS = new HashMap<>();
+    private static final List<String> PACKAGE_CAT_LOG_KEYS = new ArrayList<>();
 
     /*package*/ static synchronized void print(int priority, String tag, String message, Throwable t, List<? extends CatPrinter> printers) {
         if (!DISABLED_TAGS.isEmpty() && DISABLED_TAGS.contains(tag)) {
@@ -60,7 +61,7 @@ public final class CatGlobal {
         }
     }
 
-    private static boolean isCallingClassDisabled() {
+    public static boolean isCallingClassDisabled() {
         String packageName = CatUtil.getCallingPackage();
 
         for (int i = 0; i < DISABLED_PACKAGES.size(); i++) {
@@ -78,10 +79,11 @@ public final class CatGlobal {
     }
 
     /*package*/ static synchronized CatLog getDefaultCatLog() {
-        if (!PACKAGE_CAT_LOGS.isEmpty()) {
+        if (!PACKAGE_CAT_LOG_KEYS.isEmpty()) {
             String callingPackage = CatUtil.getCallingPackage();
-            for (String catLogPackage : PACKAGE_CAT_LOGS.keySet()) {
-                if (callingPackage.startsWith(callingPackage)) {
+            for (int i = PACKAGE_CAT_LOG_KEYS.size() - 1; i >= 0; i--) {
+                String catLogPackage = PACKAGE_CAT_LOG_KEYS.get(i);
+                if (callingPackage.startsWith(catLogPackage)) {
                     return PACKAGE_CAT_LOGS.get(catLogPackage);
                 }
             }
@@ -92,9 +94,11 @@ public final class CatGlobal {
 
     public static synchronized void setDefaultCatLogPackage(@NonNull String catLogPackage, CatLog catLog) {
         PACKAGE_CAT_LOGS.put(catLogPackage, catLog);
+        PACKAGE_CAT_LOG_KEYS.add(catLogPackage);
     }
 
     public static synchronized void removeDefaultCatLogPackage(@NonNull String catLogPackage) {
         PACKAGE_CAT_LOGS.remove(catLogPackage);
+        PACKAGE_CAT_LOG_KEYS.remove(catLogPackage);
     }
 }

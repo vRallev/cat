@@ -4,8 +4,10 @@ import android.app.Application;
 
 import net.vrallev.android.cat.CatGlobal;
 import net.vrallev.android.cat.instance.CatSimple;
+import net.vrallev.android.cat.instance.CatStaticClass;
 import net.vrallev.android.demo.cat.def.TestDefaultPackage;
 import net.vrallev.android.demo.cat.disabled.TestDisabled;
+import net.vrallev.android.demo.cat.mapping.A;
 
 /**
  * @author rwondratschek
@@ -28,5 +30,8 @@ public class App extends Application {
         CatGlobal.setTagEnabled("Disabled", false);
 
         CatGlobal.setDefaultCatLogPackage(TestDefaultPackage.class.getPackage().getName(), new CatSimple("DefaultPackage"));
+
+        CatStaticClass catStaticClass = new CatStaticClass(true).addMapping(A.class, "CustomTagA");
+        CatGlobal.setDefaultCatLogPackage(A.class.getPackage().getName(), catStaticClass);
     }
 }

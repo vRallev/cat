@@ -76,12 +76,24 @@ public final class CatUtil {
     }
 
     public static String getCallingClassNameSimple() {
-        String className = getCallingClassName();
+        return simpleClassName(getCallingClassName());
+    }
+
+    public static String simpleClassName(String className) {
         String[] split = className.split("\\.");
         if (split.length == 0) {
             return className;
         } else {
             return split[split.length - 1];
+        }
+    }
+
+    public static String stripInnerClass(String className) {
+        String[] split = className.split("\\$");
+        if (split.length == 0) {
+            return className;
+        } else {
+            return split[0];
         }
     }
 

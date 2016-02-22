@@ -1,3 +1,7 @@
+## 1.0.3 (2016-02-22)
+
+- add CatLog class which maps classes to tags
+
 ## 1.0.2 (2015-08-13)
 
 - remove global CatPrinters (they didn't make sense)
