@@ -1,6 +1,6 @@
 package net.vrallev.android.cat;
 
-import android.support.v4.util.LruCache;
+import android.util.LruCache;
 
 /**
  * @author rwondratschek

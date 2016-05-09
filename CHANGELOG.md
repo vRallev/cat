@@ -1,3 +1,7 @@
+## 1.0.4 (2016-05-09)
+
+- remove support v4 lib dependency
+
 ## 1.0.3 (2016-02-22)
 
 - add CatLog class which maps classes to tags
