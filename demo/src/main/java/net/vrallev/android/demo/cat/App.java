@@ -2,6 +2,7 @@ package net.vrallev.android.demo.cat;
 
 import android.app.Application;
 
+import net.vrallev.android.cat.Cat;
 import net.vrallev.android.cat.CatGlobal;
 import net.vrallev.android.cat.instance.CatSimple;
 import net.vrallev.android.cat.instance.CatStaticClass;
@@ -26,12 +27,17 @@ public class App extends Application {
 
         super.onCreate();
 
-        CatGlobal.setPackageEnabled(TestDisabled.class.getPackage().getName(), false);
-        CatGlobal.setTagEnabled("Disabled", false);
+        try {
+            CatGlobal.setPackageEnabled(TestDisabled.class.getPackage().getName(), false);
+            CatGlobal.setTagEnabled("Disabled", false);
 
-        CatGlobal.setDefaultCatLogPackage(TestDefaultPackage.class.getPackage().getName(), new CatSimple("DefaultPackage"));
+            CatGlobal.setDefaultCatLogPackage(TestDefaultPackage.class.getPackage().getName(), new CatSimple("DefaultPackage"));
 
-        CatStaticClass catStaticClass = new CatStaticClass(true).addMapping(A.class, "CustomTagA");
-        CatGlobal.setDefaultCatLogPackage(A.class.getPackage().getName(), catStaticClass);
+            CatStaticClass catStaticClass = new CatStaticClass(true).addMapping(A.class, "CustomTagA");
+            CatGlobal.setDefaultCatLogPackage(A.class.getPackage().getName(), catStaticClass);
+
+        } catch (Exception e) {
+            Cat.e(e);
+        }
     }
 }

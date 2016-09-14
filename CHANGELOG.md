@@ -1,3 +1,7 @@
+## 1.0.5 (2016-09-14)
+
+- fix crash when classes get repackaged
+
 ## 1.0.4 (2016-05-09)
 
 - remove support v4 lib dependency

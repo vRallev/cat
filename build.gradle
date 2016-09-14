@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.2.0-rc2'
     }
 }
 
@@ -14,9 +14,18 @@ allprojects {
 }
 
 ext {
-    compileSdkVersion = 23
+    compileSdkVersion = 24
     targetSdkVersion = compileSdkVersion
     minSdkVersion = 14
-    buildToolsVersion = "23.0.3"
+    buildToolsVersion = '24.0.2'
+
+    supportLibVersion = '24.2.0'
 }
 
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.0'
+}

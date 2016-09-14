@@ -7,7 +7,17 @@ import android.util.LruCache;
  */
 public final class CatUtil {
 
-    private static final String PACKAGE = Cat.class.getPackage().getName();
+    private static final String PACKAGE;
+
+    static {
+        Package catPackage = Cat.class.getPackage();
+        if (catPackage == null) {
+            // class got repackaged
+            PACKAGE = null;
+        } else {
+            PACKAGE = catPackage.getName();
+        }
+    }
 
     private static final LruCache<String, Boolean> IGNORED_CLASS_NAMES = new LruCache<String, Boolean>(100) {
         @Override
@@ -55,7 +65,7 @@ public final class CatUtil {
     };
 
     public static boolean isValidClass(String className) {
-        return !className.startsWith(PACKAGE);
+        return PACKAGE == null || !className.startsWith(PACKAGE);
     }
 
     private static boolean isClassNameIgnored(String className) {

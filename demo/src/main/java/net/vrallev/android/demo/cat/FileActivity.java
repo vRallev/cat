@@ -1,5 +1,6 @@
 package net.vrallev.android.demo.cat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import java.io.IOException;
  */
 public class FileActivity extends Activity {
 
+    @SuppressLint("StaticFieldLeak")
     private static final FilePrinter FILE_PRINTER = new FilePrinter(App.instance());
 
     private static final CatLog CAT = new CatSimple(FileActivity.class) {{
