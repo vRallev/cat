@@ -1,7 +1,11 @@
-CAT
-===
+# Deprecated
+### This project is not maintained anymore.
 
-A logging library for Android with focus on convenient usage and extensibility.
+
+~~CAT~~
+=======
+
+~~A logging library for Android with focus on convenient usage and extensibility.~~
 
 Download
 --------
